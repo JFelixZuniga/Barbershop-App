@@ -1,6 +1,9 @@
 .listado-servicios {
   @include tablet {
     @include grid(2, 2rem);
+    .servicio {
+      cursor: pointer;
+    }
   }
   .servicio {
     background-color: $blanco;
@@ -23,6 +26,12 @@
       margin: 0;
       font-size: 3rem;
       font-weight: $bold;
+    }
+    &.seleccionado {
+      background-color: $azul;
+      p {
+        color: $blanco;
+      }
     }
   }
 }
