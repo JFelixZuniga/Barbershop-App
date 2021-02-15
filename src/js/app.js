@@ -1,5 +1,12 @@
 let pagina = 1;
 
+const cita = {
+  nombre: "",
+  fecha: "",
+  hora: "",
+  servicios: [],
+};
+
 document.addEventListener("DOMContentLoaded", function () {
   iniciarApp();
 });
@@ -20,6 +27,9 @@ function iniciarApp() {
 
   // Comprueba la página actual para ocultar o mostrar la paginación
   botonesPaginador();
+
+  // Muestra el resumen de la cita o mensaje de error en caso de no pasar la validación
+  mostrarResumen();
 }
 
 function mostrarSeccion() {
@@ -114,9 +124,35 @@ function seleccionarServicio(e) {
 
   if (elemento.classList.contains("seleccionado")) {
     elemento.classList.remove("seleccionado");
+
+    const id = parseInt(elemento.dataset.idServicio);
+
+    eliminarServicio(id);
   } else {
     elemento.classList.add("seleccionado");
+
+    const servicioObj = {
+      id: parseInt(elemento.dataset.idServicio),
+      nombre: elemento.firstElementChild.textContent,
+      precio: elemento.firstElementChild.nextElementSibling.textContent,
+    };
+    // console.log(servicioObj);
+
+    agregarServicio(servicioObj);
   }
+}
+
+function eliminarServicio(id) {
+  const { servicios } = cita;
+  cita.servicios = servicios.filter((servicio) => servicio.id !== id);
+
+  console.log(cita);
+}
+
+function agregarServicio(servicioObj) {
+  const { servicios } = cita;
+  cita.servicios = [...servicios, servicioObj];
+  console.log(cita);
 }
 
 function paginaSiguiente() {
@@ -151,4 +187,24 @@ function botonesPaginador() {
     paginaSiguiente.classList.remove("ocultar");
   }
   mostrarSeccion(); //Cambia la sección que se muestra por la de la página
+}
+
+function mostrarResumen() {
+  // Destructuring
+  const { nombre, fecha, hora, servicios } = cita;
+
+  const resumenDiv = document.querySelector(".contenido-resumen");
+
+  // Validación
+
+  if (Object.values(cita).includes("")) {
+    // Object.values nos devuelve un Array con los valores del objeto, sin sus llaves (Keys). Básicamente en la línea anterior evaluamos si el objeto cita nos entrega un array con algún campo vacío.
+    const noServicios = document.createElement("P");
+    noServicios.textContent = "Por favor complete todos los datos";
+
+    noServicios.classList.add("invalidar-cita");
+
+    // Agregar a resumen Div
+    resumenDiv.appendChild(noServicios);
+  }
 }
